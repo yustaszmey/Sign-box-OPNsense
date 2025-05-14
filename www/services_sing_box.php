@@ -3,27 +3,27 @@ require_once("guiconfig.inc");
 include("head.inc");
 include("fbegin.inc");
 
-// 配置文件路径
+// Путь к файлам конфигурации
 $config_file = "/usr/local/etc/sing-box/config.json";
 $log_file = "/var/log/sing-box.log";
 
-// 初始化消息变量
+// Инициализация переменной для сообщений
 $message = "";
 
-// 执行命令的通用函数
+// Функция для выполнения комманд
 function execCommand($command) {
     exec($command, $output, $return_var);
     return [$output, $return_var];
 }
 
-// 处理服务操作
+// Обработка сервисов
 function handleServiceAction($action) {
     $allowedActions = ['start', 'stop', 'restart'];
     if (!in_array($action, $allowedActions)) {
-        return "无效的操作！";
+        return "Недопустимая операция！";
     }
     
-    // 重启时清空日志
+    // Очистка журнала
     if (in_array($action, ['restart'])) {
         file_put_contents("/var/log/sing-box.log", "");
     }
@@ -31,17 +31,17 @@ function handleServiceAction($action) {
     list($output, $return_var) = execCommand("service singbox " . escapeshellarg($action));
 
     $messages = [
-        'start' => ["sing-box服务启动成功！", "sing-box服务启动失败！"],
-        'stop' => ["sing-box服务已停止！", "sing-box服务停止失败！"],
-        'restart' => ["sing-box服务重启成功！", "sing-box服务重启失败！"]
+        'start' => ["sing-box служба успешно запущена！", "sing-box не удалось запустить службу！"],
+        'stop' => ["sing-box служба остановлена！", "sing-box не удалось остановить службу！"],
+        'restart' => ["sing-box служба успешно перезапущена！", "sing-box не удалось перезапустить службу！"]
     ];
     return $return_var === 0 ? $messages[$action][0] : $messages[$action][1];
 }
 
-// 保存配置文件
+// Сохранение конфигурационного файла
 function saveConfig($file, $content) {
     if (!is_writable($file)) {
-        return "配置保存失败，请确保文件可写。";
+        return "Не удалось сохранить конфигурацию, пожалуйста, убедитесь, что файл доступен для записи.";
     }
 
     if (empty(trim($content))) {
