@@ -1,7 +1,8 @@
 ## Sing-box for OPNsense
-!!!!!Перевод не окончен.<br />
-Форк от https://github.com/Opnwall/Sing-Box-for-OPNsense<br />
-Добавлен только перевод для удобства пользования.
+
+!!!!!Перевод не окончен.
+
+Это ветка https://github.com/Opnwall/Sing-Box-for-OPNsense, добавлен только русский перевод для удобства пользования.
 
 Установщик для sing-box.
 Прошел тест на OPNsense 25.1.5.
