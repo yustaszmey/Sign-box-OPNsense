@@ -1,17 +1,17 @@
 #!/bin/bash
 
 echo -e ''
-echo -e "\033[32m========Sing-Box for OPNsense 代理全家桶一键安装脚本=========\033[0m"
+echo -e "\033[32m========Sing-Box for OPNsense Установка пакетов в один клик=========\033[0m"
 echo -e ''
 
-# 定义颜色变量
+# Определение расцветки
 GREEN="\033[32m"
 YELLOW="\033[33m"
 RED="\033[31m"
 CYAN="\033[36m"
 RESET="\033[0m"
 
-# 定义目录变量
+# Определение каталогов
 ROOT="/usr/local"
 BIN_DIR="$ROOT/bin"
 WWW_DIR="$ROOT/www"
@@ -26,7 +26,7 @@ TMP_FILE="/tmp/config.xml.tmp"
 TIMESTAMP=$(date +%F-%H%M%S)
 BACKUP_FILE="/conf/config.xml.bak.$TIMESTAMP"
 
-# 定义日志函数
+# Настройка ведения журнала
 log() {
     local color="$1"
     local message="$2"
