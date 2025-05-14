@@ -33,58 +33,58 @@ log() {
     echo -e "${color}${message}${RESET}"
 }
 
-# 创建目录
-log "$YELLOW" "创建目录..."
+# Создать каталог
+log "$YELLOW" "Создать каталог..."
 sleep 1
-mkdir -p "$CONF_DIR/sing-box/ui" "$CONF_DIR/tun2socks" || log "$RED" "目录创建失败！"
+mkdir -p "$CONF_DIR/sing-box/ui" "$CONF_DIR/tun2socks" || log "$RED" "Не удалось создать каталог！"
 
-# 复制文件
-log "$YELLOW" "复制文件..."
+# Копируем файл
+log "$YELLOW" "Копируем файл..."
 sleep 1
-log "$YELLOW" "生成菜单..."
-# 删除菜单缓存
+log "$YELLOW" "Генерация меню..."
+# Удаляем кэш меню
 rm -f /tmp/opnsense_menu_cache.xml
 rm -f /tmp/opnsense_acl_cache.json
 sleep 1
-log "$YELLOW" "生成服务..."
+log "$YELLOW" "Генерация данных..."
 sleep 1
-log "$YELLOW" "添加权限..."
+log "$YELLOW" "Меняем разрешение на файлы..."
 sleep 1
 chmod +x bin/*
 chmod +x rc.d/*
-cp -f bin/* "$BIN_DIR/" || log "$RED" "bin 文件复制失败！"
-cp -f www/* "$WWW_DIR/" || log "$RED" "www 文件复制失败！"
-cp -f plugins/* "$PLUGINS/" || log "$RED" "plugins 文件复制失败！"
-cp -f actions/* "$ACTIONS/" || log "$RED" "actions 文件复制失败！"
-cp -R -f menu/* "$MODELS_DIR/" || log "$RED" "menu 文件复制失败！"
-cp -R -f ui/* "$CONF_DIR/sing-box/ui/" || log "$RED" "ui 文件复制失败！"
-cp rc.d/* "$RC_DIR/" || log "$RED" "rc.d 文件复制失败！"
-cp conf/config_sing-box.json "$CONF_DIR/sing-box/config.json" || log "$RED" "sing-box 配置文件复制失败！"
-cp conf/config_tun2socks.yaml "$CONF_DIR/tun2socks/config.yaml" || log "$RED" "tun2socks 配置文件复制失败！"
+cp -f bin/* "$BIN_DIR/" || log "$RED" "bin не удалось скопировать файл！"
+cp -f www/* "$WWW_DIR/" || log "$RED" "www не удалось скопировать файл！"
+cp -f plugins/* "$PLUGINS/" || log "$RED" "plugins не удалось скопировать файл！"
+cp -f actions/* "$ACTIONS/" || log "$RED" "actions не удалось скопировать файл！"
+cp -R -f menu/* "$MODELS_DIR/" || log "$RED" "menu не удалось скопировать файл！"
+cp -R -f ui/* "$CONF_DIR/sing-box/ui/" || log "$RED" "ui не удалось скопировать файл！"
+cp rc.d/* "$RC_DIR/" || log "$RED" "rc.d не удалось скопировать файл！"
+cp conf/config_sing-box.json "$CONF_DIR/sing-box/config.json" || log "$RED" "sing-box не удалось выполнить копирование конфигурационного файла！"
+cp conf/config_tun2socks.yaml "$CONF_DIR/tun2socks/config.yaml" || log "$RED" "tun2socks не удалось выполнить копирование конфигурационного файла！"
 sleep 1
 
-# 添加服务启动项
-log "$YELLOW" "配置系统服务..."
-cp -f rc.conf/* "$RC_CONF/" || log "$RED" "rc.conf 文件复制失败！"
+# Добавляем в автозагрузку
+log "$YELLOW" "Настройка системных служб..."
+cp -f rc.conf/* "$RC_CONF/" || log "$RED" "rc.conf не удалось скопировать файл！"
 sleep 1
 
-# 启动Tun接口
-log "$YELLOW" "启动tun2socks..."
+# Запуск интерфейса tun
+log "$YELLOW" "Запуск tun2socks..."
 service tun2socks start > /dev/null 2>&1
 echo ""
 
-# 备份配置文件
+# Резервная копия конфигурационного файла
 cp "$CONFIG_FILE" "$BACKUP_FILE" || {
-  echo "配置备份失败，终止操作！"
+  echo "Не удалось выполнить резервное копирование конфигурации, отмена！"
   echo ""
   exit 1
 }
 
-# 添加tun接口
-log "$YELLOW" "添加tun接口..."
+# Добавляем интерфейс tun
+log "$YELLOW" "Добавляем интерфейс tun..."
 sleep 1
 if grep -q "<if>tun_3000</if>" "$CONFIG_FILE"; then
-  echo "存在同名接口，忽略"
+  echo "Интерфейс с таким именем существует, пропускаем."
   echo ""
 else
   awk '
@@ -104,14 +104,14 @@ else
   }
   { print }
   ' "$CONFIG_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$CONFIG_FILE"
-  echo "接口添加完成"
+  echo "Добавление интерфейса завершено."
   echo ""
 fi
 
-# 添加CN_IP别名
-log "$YELLOW" "添加CN_IP别名..."
+# Добавить псевдоним CN_IP
+log "$YELLOW" "Добавить псевдоним CN_IP..."
 if grep -q "<content>https://ispip.clang.cn/all_cn.txt</content>" "$CONFIG_FILE"; then
-  echo "存在相同别名，忽略"
+  echo "Псевдоним уже существует, пропускаем."
   echo "" 
 else
   awk '
@@ -159,15 +159,15 @@ else
   }
   { print }
   ' "$CONFIG_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$CONFIG_FILE"
-    echo "别名添加完成"
+    echo "Добавление псевдонима завершено."
     echo "" 
 fi
 
-# 添加防火墙规则（非中国IP走透明网关TUN_GW）
-log "$YELLOW" "添加防火墙规则..."
+# Добавление правил брандмауэра (некитайский IP-адрес передается на прозрачный шлюз TUN_GW)
+log "$YELLOW" "Добавление правил брандмауэра..."
 sleep 1
 if grep -q "<gateway>TUN_GW</gateway>" "$CONFIG_FILE"; then
-  echo "存在同名规则，忽略"
+  echo "Правило с таким названием существует, пропускаем."
   echo ""
 else
   awk '
@@ -195,13 +195,13 @@ else
   }
   { print }
   ' "$CONFIG_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$CONFIG_FILE"
-  echo "规则添加完成"
+  echo "Добавление правила завершено."
   echo ""
 fi
 
-# 更改Unbound端口为 5355
+# Меняем порт Unbound 5355
 sleep 1
-log "$YELLOW" "更改Unbound端口..."
+log "$YELLOW" "Меняем порт Unbound..."
 
 PORT_OK=$(awk '
 BEGIN {
@@ -225,7 +225,7 @@ BEGIN {
 ' "$CONFIG_FILE")
 
 if [ "$PORT_OK" = "yes" ]; then
-  echo "端口已经为5355，跳过"
+  echo "Порт уже 5355，пропускаем."
 else
   awk '
   BEGIN {
@@ -270,34 +270,34 @@ else
 
   if [ -s "$TMP_FILE" ]; then
     mv "$TMP_FILE" "$CONFIG_FILE"
-    echo "端口已设置为5355"
+    echo "Порт был настроен на 5355"
   else
-    log "$RED" "修改失败，请检查配置文件"
+    log "$RED" "Не удалось настроить, проверьте файл конфигурации."
   fi
 fi
 echo ""
 
-# 重启服务Unbound
-log "$YELLOW" "重启Unbound服务..."
+# Рестарт службы Unbound
+log "$YELLOW" "Рестарт службы Unbound..."
 /usr/local/etc/rc.d/unbound restart > /dev/null 2>&1
 echo ""
 
-# 重新载入防火墙规则
-log "$YELLOW" "重新载入防火墙规则..."
+# Рестарт брендмауэра
+log "$YELLOW" "Рестарт брендмауэра..."
 configctl filter reload > /dev/null 2>&1
 echo ""
 
-# 重新载入configd
-log "$YELLOW" "重新载入configd..."
+# Рестарт configd
+log "$YELLOW" "Рестарт configd..."
 service configd restart > /dev/null 2>&1
 echo ""
 
-# 重启所有服务
-# log "$YELLOW" "应用所有更改，请稍等..."
+# Рестарт всех служб
+# log "$YELLOW" "Применение изменений..."
 # /usr/local/etc/rc.reload_all >/dev/null 2>&1
-# echo "所有服务已重新加载！"
+# echo "Все службы перезапущены！"
 # echo ""
 
-# 完成提示
-log "$GREEN" "安装完毕，请刷新浏览器，导航到VPN > Sing-Box 菜单进行配置。"
+# Завершение
+log "$GREEN" "Перейдите на страницу VPN > Sing-Box"
 echo ""
