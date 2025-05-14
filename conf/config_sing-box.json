@@ -30,23 +30,23 @@
         "tag": "Local-DNS",
         "address": "https://223.5.5.5:443/dns-query",
         "address_resolver": "Local-DNS-Resolver",
-        "detour": "🎯 全球直连"
+        "detour": "🎯 Прямое подключение"
       },
       {
         "tag": "Local-DNS-Resolver",
         "address": "udp://223.5.5.5:53",
-        "detour": "🎯 全球直连"
+        "detour": "🎯 Прямое подключение"
       },
       {
         "tag": "Remote-DNS",
         "address": "tls://8.8.8.8:853",
         "address_resolver": "Remote-DNS-Resolver",
-        "detour": "🚀 节点选择"
+        "detour": "🚀 Выборочные узлы"
       },
       {
         "tag": "Remote-DNS-Resolver",
         "address": "udp://8.8.8.8:53",
-        "detour": "🚀 节点选择"
+        "detour": "🚀 Выборочные узлы"
       }
     ],
     "rules": [
@@ -85,7 +85,7 @@
     "independent_cache": false,
     "final": "Remote-DNS" 
   },
-  "inbounds": [    //dns-in 必须保留。 
+  "inbounds": [ 
     {
       "tag": "dns-in",
       "type": "direct",
@@ -104,13 +104,13 @@
       "domain_strategy": "prefer_ipv4"
     }
   ],
-  "outbounds": [      //根据自己的节点信息替换outbounds至route部分配置。  
+  "outbounds": [
     {
       "type": "selector",
-      "tag": "🚀 节点选择",
+      "tag": "🚀 Выборочные узлы",
       "interrupt_exist_connections": true,
       "outbounds": [
-        "🎈 自动选择",
+        "🎈 Автоматический",
         "10",
         "11",
         "12"
@@ -118,7 +118,7 @@
     },
     {
       "type": "urltest",
-      "tag": "🎈 自动选择",
+      "tag": "🎈 Автоматический",
       "url": "https://www.gstatic.com/generate_204",
       "interval": "3m",
       "tolerance": 150,
@@ -131,15 +131,15 @@
     },
     {
       "type": "direct",
-      "tag": "🎯 全球直连"
+      "tag": "🎯 Прямое подключение"
     },
     {
       "type": "selector",
-      "tag": "🐟 漏网之鱼",
+      "tag": "🐟 Мимо правил",
       "interrupt_exist_connections": true,
       "outbounds": [
-        "🚀 节点选择",
-        "🎯 全球直连"
+        "🚀 Выборочные узлы",
+        "🎯 Прямое подключение"
       ]
     },
     {
@@ -147,10 +147,10 @@
       "tag": "GLOBAL",
       "interrupt_exist_connections": true,
       "outbounds": [
-        "🚀 节点选择",
-        "🎈 自动选择",
-        "🎯 全球直连",
-        "🐟 漏网之鱼"
+        "🚀 Выборочные узлы",
+        "🎈 Автоматический",
+        "🎯 Прямое подключение",
+        "🐟 Мимо правил"
       ]
     },
     {
@@ -244,7 +244,7 @@
       {
         "action": "route",
         "clash_mode": "direct",
-        "outbound": "🎯 全球直连"
+        "outbound": "🎯 Прямое подключение"
       },
       {
         "action": "route",
@@ -266,35 +266,35 @@
         "rule_set": [
           "GeoSite-Private"
         ],
-        "outbound": "🎯 全球直连"
+        "outbound": "🎯 Прямое подключение"
       },
       {
         "action": "route",
         "rule_set": [
           "GeoSite-CN"
         ],
-        "outbound": "🎯 全球直连"
+        "outbound": "🎯 Прямое подключение"
       },
       {
         "action": "route",
         "rule_set": [
           "GeoIP-Private"
         ],
-        "outbound": "🎯 全球直连"
+        "outbound": "🎯 Прямое подключение"
       },
       {
         "action": "route",
         "rule_set": [
           "GeoIP-CN"
         ],
-        "outbound": "🎯 全球直连"
+        "outbound": "🎯 Прямое подключение"
       },
       {
         "action": "route",
         "rule_set": [
           "GeoLocation-!CN"
         ],
-        "outbound": "🚀 节点选择"
+        "outbound": "🚀 Выборочные узлы"
       }
     ],
     "rule_set": [
@@ -303,46 +303,46 @@
         "type": "remote",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/category-ads-all.srs",
         "format": "binary",
-        "download_detour": "🎯 全球直连"
+        "download_detour": "🎯 Прямое подключение"
       },
       {
         "tag": "GeoIP-Private",
         "type": "remote",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geoip/private.srs",
         "format": "binary",
-        "download_detour": "🎯 全球直连"
+        "download_detour": "🎯 Прямое подключение"
       },
       {
         "tag": "GeoSite-Private",
         "type": "remote",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/private.srs",
         "format": "binary",
-        "download_detour": "🎯 全球直连"
+        "download_detour": "🎯 Прямое подключение"
       },
       {
         "tag": "GeoIP-CN",
         "type": "remote",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geoip/cn.srs",
         "format": "binary",
-        "download_detour": "🎯 全球直连"
+        "download_detour": "🎯 Прямое подключение"
       },
       {
         "tag": "GeoSite-CN",
         "type": "remote",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/cn.srs",
         "format": "binary",
-        "download_detour": "🎯 全球直连"
+        "download_detour": "🎯 Прямое подключение"
       },
       {
         "tag": "GeoLocation-!CN",
         "type": "remote",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/geolocation-!cn.srs",
         "format": "binary",
-        "download_detour": "🎯 全球直连"
+        "download_detour": "🎯 Прямое подключение"
       }
     ],
     "auto_detect_interface": true,
-    "final": "🐟 漏网之鱼"
+    "final": "🐟 Мимо правил"
   },
   }
 }
