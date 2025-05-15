@@ -3,27 +3,27 @@ require_once("guiconfig.inc");
 include("head.inc");
 include("fbegin.inc");
 
-// 配置文件路径
+// Путь к файлам конфигурации
 $config_file = "/usr/local/etc/tun2socks/config.yaml";
 $log_file = "/var/log/tun2socks.log";
 
-// 初始化消息变量
+// Инициализация переменной для сообщений
 $message = "";
 
-// 执行命令的通用函数
+// Функция для выполнения комманд
 function execCommand($command) {
     exec($command, $output, $return_var);
     return [$output, $return_var];
 }
 
-// 处理服务操作
+// Обработка сервисов
 function handleServiceAction($action) {
     $allowedActions = ['start', 'stop', 'restart'];
     if (!in_array($action, $allowedActions)) {
         return "无效的操作！";
     }
     
-    // 重启时清空日志
+    // Очистка журнала
     if (in_array($action, ['restart'])) {
         file_put_contents("/var/log/tun2socks.log", "");
     }
@@ -38,20 +38,20 @@ function handleServiceAction($action) {
     return $return_var === 0 ? $messages[$action][0] : $messages[$action][1];
 }
 
-// 保存配置文件
+// Сохранение конфигурационного файла
 function saveConfig($file, $content) {
     if (!is_writable($file)) {
-        return "配置保存失败，请确保文件可写。";
+        return "Не удалось сохранить конфигурацию, пожалуйста, убедитесь, что файл доступен для записи.";
     }
 
     if (empty(trim($content))) {
-        return "配置内容不能为空！";
+        return "Содержимое конфигурации не может быть пустым！";
     }
 
     return file_put_contents($file, $content) !== false ? "配置保存成功！" : "配置保存失败！";
 }
 
-// 处理表单提交
+// Процесс отправки формы
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = filter_input(INPUT_POST, 'action', FILTER_SANITIZE_STRING);
 
@@ -69,11 +69,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// 读取配置文件内容
-$config_content = file_exists($config_file) ? htmlspecialchars(file_get_contents($config_file)) : "配置文件未找到！";
+// Чтение файла конфигурации
+$config_content = file_exists($config_file) ? htmlspecialchars(file_get_contents($config_file)) : "Конфигурационный файл не найден！";
 ?>
 
-<!-- 页面表单显示 -->
+<!-- Отображение формы страницы  -->
 <div>
     <?php if (!empty($message)): ?>
     <div class="alert alert-info">
@@ -84,20 +84,20 @@ $config_content = file_exists($config_file) ? htmlspecialchars(file_get_contents
 <section class="page-content-main">
     <div class="container-fluid">
         <div class="row">
-            <!-- 状态显示 -->
+            <!-- Отображение состояния -->
             <section class="col-xs-12">
                 <div class="content-box tab-content table-responsive __mb">
                     <table class="table table-striped">
                         <tbody>
                             <tr>
                                 <td>
-                                    <strong>服务状态</strong>
+                                    <strong>Статус службы</strong>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <form id="tun2socks-status" class="alert alert-secondary">
-                                        <i class="fa fa-circle-notch fa-spin"></i> 检查中...
+                                        <i class="fa fa-circle-notch fa-spin"></i> Проверка...
                                     </form>
                                 </td>
                             </tr>
@@ -105,27 +105,27 @@ $config_content = file_exists($config_file) ? htmlspecialchars(file_get_contents
                     </table>
                 </div>
             </section>
-            <!-- 服务控制 -->
+            <!-- Управление службой -->
             <section class="col-xs-12">
                 <div class="content-box tab-content table-responsive __mb">
                     <table class="table table-striped">
                         <tbody>
                             <tr>
                                 <td>
-                                    <strong>服务控制</strong>
+                                    <strong>Управление службой</strong>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <form method="post" class="form-inline">
                                         <button type="submit" name="action" value="start" class="btn btn-success">
-                                            <i class="fa fa-play"></i> 启动
+                                            <i class="fa fa-play"></i> Запуск
                                         </button>
                                         <button type="submit" name="action" value="stop" class="btn btn-danger">
-                                            <i class="fa fa-stop"></i> 停止
+                                            <i class="fa fa-stop"></i> Остановка
                                         </button>
                                         <button type="submit" name="action" value="restart" class="btn btn-warning">
-                                            <i class="fa fa-refresh"></i> 重启
+                                            <i class="fa fa-refresh"></i> Перезапуск
                                         </button>
                                     </form>
                                 </td>
@@ -134,14 +134,14 @@ $config_content = file_exists($config_file) ? htmlspecialchars(file_get_contents
                     </table>
                 </div>
             </section>
-            <!-- 配置管理 -->
+            <!-- Конфигурация -->
             <section class="col-xs-12">
                 <div class="content-box tab-content table-responsive __mb">
                     <table class="table table-striped">
                         <tbody>
                             <tr>
                                 <td>
-                                    <strong>配置管理</strong>
+                                    <strong>Конфигурация</strong>
                                 </td>
                             </tr>
                             <tr>
@@ -151,7 +151,7 @@ $config_content = file_exists($config_file) ? htmlspecialchars(file_get_contents
                                             class="form-control"><?= $config_content; ?></textarea>
                                         <br>
                                         <button type="submit" name="action" value="save_config" class="btn btn-danger">
-                                            <i class="fa fa-save"></i> 保存配置
+                                            <i class="fa fa-save"></i> Сохранить
                                         </button>
                                     </form>
                                 </td>
@@ -160,14 +160,14 @@ $config_content = file_exists($config_file) ? htmlspecialchars(file_get_contents
                     </table>
                 </div>
             </section>
-            <!-- 日志查看 -->
+            <!-- Просмотр журнала -->
             <section class="col-xs-12">
                 <div class="content-box tab-content table-responsive __mb">
                     <table class="table table-striped">
                         <tbody>
                             <tr>
                                 <td>
-                                    <strong>日志查看</strong>
+                                    <strong>Журнал</strong>
                                 </td>
                             </tr>
                             <tr>
@@ -186,29 +186,29 @@ $config_content = file_exists($config_file) ? htmlspecialchars(file_get_contents
 </section>
 
 <script>
-// 检查服务状态
+// Проверка состояния службы
 function checkTun2socksStatus() {
     fetch('/status_tun2socks.php', { cache: 'no-store' })
         .then(response => response.json())
         .then(data => {
             const statusElement = document.getElementById('tun2socks-status');
             if (data.status === "running") {
-                statusElement.innerHTML = '<i class="fa fa-check-circle text-success"></i> tun2socks正在运行';
+                statusElement.innerHTML = '<i class="fa fa-check-circle text-success"></i> tun2socks работает';
                 statusElement.className = "alert alert-success";
             } else {
-                statusElement.innerHTML = '<i class="fa fa-times-circle text-danger"></i> tun2socks已停止';
+                statusElement.innerHTML = '<i class="fa fa-times-circle text-danger"></i> tun2socks остановлен';
                 statusElement.className = "alert alert-danger";
             }
         })
         .catch(error => {
-            console.error("状态检查失败:", error.message);
+            console.error("Не удалось выполнить проверку состояния:", error.message);
             const statusElement = document.getElementById('tun2socks-status');
-            statusElement.innerHTML = '<i class="fa fa-times-circle text-danger"></i> 状态检查失败';
+            statusElement.innerHTML = '<i class="fa fa-times-circle text-danger"></i> Не удалось выполнить проверку состояния';
             statusElement.className = "alert alert-danger";
         });
 }
 
-// 刷新日志
+// Обновление журнала
 function refreshLogs() {
     fetch('/status_tun2socks_logs.php', { cache: 'no-store' })
         .then(response => response.text())
@@ -218,14 +218,14 @@ function refreshLogs() {
             logViewer.scrollTop = logViewer.scrollHeight;
         })
         .catch(error => {
-            console.error("日志刷新失败:", error.message);
+            console.error("Не удалось обновить журнал:", error.message);
             const logViewer = document.getElementById('log-viewer');
-            logViewer.value += "\n[错误] 无法加载日志，请检查网络或服务器状态。\n";
+            logViewer.value += "\n[Ошибка] Не удалось загрузить журнал, пожалуйста, проверьте состояние сети или сервера.\n";
             logViewer.scrollTop = logViewer.scrollHeight;
         });
 }
 
-// 初始化
+// Инициализация
 document.addEventListener('DOMContentLoaded', () => {
     checkTun2socksStatus();
     refreshLogs();
