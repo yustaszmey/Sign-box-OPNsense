@@ -2,7 +2,7 @@
 // status_tun2socks.php
 header('Content-Type: application/json');
 
-// 检查tun2socks进程是否存在
+// Проверка статуска tun2socks
 exec("pgrep -x tun2socks", $output, $return_var);
 
 if ($return_var === 0) {
